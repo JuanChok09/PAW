@@ -1,0 +1,40 @@
+﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+using PAW.Web.Models;
+using PAW.Web.Services;
+
+namespace PAW.Web.Controllers
+{
+    public class UserController : Controller
+    {
+        private readonly IUserService _userService;
+        private readonly ILogger<UserController> _logger;
+
+        public UserController(
+            IUserService userService,
+            ILogger<UserController> logger)
+        {
+            _userService = userService;
+            _logger = logger;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var result = await _userService.GetUsersAsync();
+            return View(result);
+        }
+
+        [ResponseCache(
+            Duration = 0,
+            Location = ResponseCacheLocation.None,
+            NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel
+            {
+                RequestId = Activity.Current?.Id
+                    ?? HttpContext.TraceIdentifier
+            });
+        }
+    }
+}
