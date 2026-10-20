@@ -43,9 +43,15 @@ namespace PAW.API.Controllers
             return true;
         }
 
-        [HttpDelete]
-        public async Task<bool> Delete(Notification notification)
+        [HttpDelete("{id:int}")]
+        public async Task<bool> Delete(int id)
         {
+            var notification =
+                await notificationRepository.FindAsync(id);
+
+            if (notification == null)
+                return false;
+
             return await notificationRepository.DeleteAsync(notification);
         }
     }

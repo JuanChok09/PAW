@@ -43,16 +43,21 @@ public class ProductDTO
     }
 
     public static Product ConvertTo(ProductDTO productDTO)
+    {
+        return new Product
         {
-            return new Product
-            {
-                ProductId = productDTO.ProductId,
-                ProductName = productDTO.Name,
-                Description = productDTO.Description,
-                Rating = productDTO.Rating,
-                ModifiedBy = productDTO.ModifiedBy,
-                CreatedBy = productDTO.CreatedBy,
-                LastModified = productDTO.ModifiedDate
-            };
+            ProductId = productDTO.ProductId,
+            ProductName = productDTO.Name,
+            Description = productDTO.Description,
+            Rating = productDTO.Rating,
+            ModifiedBy = productDTO.ModifiedBy,
+            CreatedBy = productDTO.CreatedBy,
+            LastModified = productDTO.ModifiedDate,
+
+            Comments = productDTO.Comments ?? string.Empty,
+            CreatedDate = productDTO.CreatedDate,
+            ModifiedDate = productDTO.ModifiedDate
+        };
     }
 }
+

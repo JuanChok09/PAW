@@ -14,14 +14,20 @@ namespace PAW.API.Controllers
         [HttpGet(Name = "GetUserRoles")]
         public async Task<IEnumerable<UserRoleDTO>> GetAll()
         {
-            var userRoles = await userRoleRepository.ReadAsync() ?? [];
+            var userRoles =
+                await userRoleRepository.ReadAsync() ?? [];
+
             return userRoles.Select(UserRoleDTO.ConvertFrom);
         }
 
-        [HttpGet("{id:int}", Name = "GetUserRoleById")]
-        public async Task<ActionResult<UserRoleDTO>> GetById(int id)
+        [HttpGet("{id}", Name = "GetUserRoleById")]
+        public async Task<ActionResult<UserRoleDTO>> GetById(decimal id)
         {
-            var userRole = await userRoleRepository.FindAsync(id);
+            var userRoles =
+                await userRoleRepository.ReadAsync();
+
+            var userRole =
+                userRoles.FirstOrDefault(x => x.Id == id);
 
             if (userRole == null)
                 return NotFound();
@@ -30,22 +36,46 @@ namespace PAW.API.Controllers
         }
 
         [HttpPost]
-        public async Task<bool> Save([FromBody] IEnumerable<UserRole> userRoles)
+        public async Task<bool> Save(
+            [FromBody] IEnumerable<UserRole> userRoles)
         {
             foreach (var userRole in userRoles)
             {
-                if (userRole.Id.GetValueOrDefault() > 0)
-                    await userRoleRepository.UpdateAsync(userRole);
+                var existingItems =
+                    await userRoleRepository.ReadAsync();
+
+                var existing =
+                    existingItems.FirstOrDefault(
+                        x => x.Id == userRole.Id);
+
+                if (existing != null)
+                {
+                    existing.RoldId = userRole.RoldId;
+                    existing.UserId = userRole.UserId;
+
+                    await userRoleRepository.UpdateAsync(existing);
+                }
                 else
+                {
                     await userRoleRepository.CreateAsync(userRole);
+                }
             }
 
             return true;
         }
 
-        [HttpDelete]
-        public async Task<bool> Delete(UserRole userRole)
+        [HttpDelete("{id}")]
+        public async Task<bool> Delete(decimal id)
         {
+            var userRoles =
+                await userRoleRepository.ReadAsync();
+
+            var userRole =
+                userRoles.FirstOrDefault(x => x.Id == id);
+
+            if (userRole == null)
+                return false;
+
             return await userRoleRepository.DeleteAsync(userRole);
         }
     }

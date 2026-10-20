@@ -7,15 +7,24 @@
 <div class="container mt-4">
 
     <div class="d-flex justify-content-between align-items-center mb-3">
+
         <h2>Suppliers</h2>
 
-        <a asp-action="Create" class="btn btn-primary">
+        <button type="button"
+                class="btn btn-primary"
+                onclick="loadSupplierCreate()">
+
             <i class="bi bi-plus-circle"></i>
             Add Supplier
-        </a>
+
+        </button>
+
     </div>
 
+    <div id="supplierDetails"></div>
+
     <div class="card shadow-sm">
+
         <div class="card-body">
 
             <div class="table-responsive">
@@ -23,6 +32,7 @@
                 <table class="table table-striped table-hover align-middle">
 
                     <thead class="table-dark">
+
                         <tr>
                             <th>Supplier ID</th>
                             <th>Supplier Name</th>
@@ -36,6 +46,7 @@
                             <th>Modified By</th>
                             <th class="text-center">Actions</th>
                         </tr>
+
                     </thead>
 
                     <tbody>
@@ -47,23 +58,16 @@
                                 <tr>
 
                                     <td>@supplier.SupplierId</td>
-
                                     <td>@supplier.SupplierName</td>
-
                                     <td>@supplier.ContactName</td>
-
                                     <td>@supplier.ContactTitle</td>
-
                                     <td>@supplier.Phone</td>
-
                                     <td>@supplier.Address</td>
-
                                     <td>@supplier.City</td>
-
                                     <td>@supplier.Country</td>
 
                                     <td>
-                                        @(supplier.LastModified?.ToString("yyyy-MM-dd HH:mm"))
+                                        @supplier.LastModified?.ToString("yyyy-MM-dd HH:mm")
                                     </td>
 
                                     <td>@supplier.ModifiedBy</td>
@@ -72,23 +76,23 @@
 
                                         <div class="btn-group" role="group">
 
-                                            <a asp-action="Edit"
-                                               asp-route-id="@supplier.SupplierId"
-                                               class="btn btn-sm btn-warning">
+                                            <button type="button"
+                                                    class="btn btn-sm btn-warning"
+                                                    onclick="loadSupplierEdit(@supplier.SupplierId)">
                                                 Edit
-                                            </a>
+                                            </button>
 
-                                            <a asp-action="Details"
-                                               asp-route-id="@supplier.SupplierId"
-                                               class="btn btn-sm btn-info">
+                                            <button type="button"
+                                                    class="btn btn-sm btn-info"
+                                                    onclick="loadSupplierDetails(@supplier.SupplierId)">
                                                 Details
-                                            </a>
+                                            </button>
 
-                                            <a asp-action="Delete"
-                                               asp-route-id="@supplier.SupplierId"
-                                               class="btn btn-sm btn-danger">
+                                            <button type="button"
+                                                    class="btn btn-sm btn-danger"
+                                                    onclick="deleteSupplier(@supplier.SupplierId)">
                                                 Delete
-                                            </a>
+                                            </button>
 
                                         </div>
 
@@ -100,9 +104,14 @@
                         else
                         {
                             <tr>
-                                <td colspan="11" class="text-center">
+
+                                <td colspan="11"
+                                    class="text-center">
+
                                     No suppliers found.
+
                                 </td>
+
                             </tr>
                         }
 
@@ -113,6 +122,121 @@
             </div>
 
         </div>
+
     </div>
 
 </div>
+
+@section Scripts {
+
+    <script>
+
+        async function loadSupplierDetails(id) {
+
+            const response =
+                await fetch('/Supplier/Details?id=' + id);
+
+            const html =
+                await response.text();
+
+            document.getElementById('supplierDetails')
+                .innerHTML = html;
+        }
+
+
+        async function loadSupplierEdit(id) {
+
+            const response =
+                await fetch('/Supplier/Edit?id=' + id);
+
+            const html =
+                await response.text();
+
+            document.getElementById('supplierDetails')
+                .innerHTML = html;
+        }
+
+
+        async function saveSupplierEdit() {
+
+            const form =
+                document.getElementById('editSupplierForm');
+
+            const formData =
+                new FormData(form);
+
+            const response =
+                await fetch('/Supplier/Edit', {
+                    method: 'POST',
+                    body: formData
+                });
+
+            const result =
+                await response.json();
+
+            if (result.success) {
+                location.reload();
+            }
+        }
+
+
+        async function loadSupplierCreate() {
+
+            const response =
+                await fetch('/Supplier/Create');
+
+            const html =
+                await response.text();
+
+            document.getElementById('supplierDetails')
+                .innerHTML = html;
+        }
+
+
+        async function saveSupplierCreate() {
+
+            const form =
+                document.getElementById('createSupplierForm');
+
+            const formData =
+                new FormData(form);
+
+            const response =
+                await fetch('/Supplier/Create', {
+                    method: 'POST',
+                    body: formData
+                });
+
+            const result =
+                await response.json();
+
+            if (result.success) {
+                location.reload();
+            }
+        }
+
+
+        async function deleteSupplier(id) {
+
+            const confirmed =
+                confirm('Are you sure you want to delete this supplier?');
+
+            if (!confirmed) {
+                return;
+            }
+
+            const response =
+                await fetch('/Supplier/Delete?id=' + id, {
+                    method: 'POST'
+                });
+
+            const result =
+                await response.json();
+
+            if (result.success) {
+                location.reload();
+            }
+        }
+
+    </script>
+}

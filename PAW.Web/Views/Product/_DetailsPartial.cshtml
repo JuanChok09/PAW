@@ -1,0 +1,44 @@
+﻿@model PAW.Models.DTO.ProductDTO
+
+<div class="card mt-3 shadow-sm">
+    <div class="card-header">
+        <h5 class="mb-0">Product Details</h5>
+    </div>
+
+    <div class="card-body">
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Product ID:</div>
+            <div class="col-md-9">@Model.ProductId</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Name:</div>
+            <div class="col-md-9">@Model.Name</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Description:</div>
+            <div class="col-md-9">@Model.Description</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Rating:</div>
+            <div class="col-md-9">@Model.Rating</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Created By:</div>
+            <div class="col-md-9">@Model.CreatedBy</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Modified By:</div>
+            <div class="col-md-9">@Model.ModifiedBy</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Modified Date:</div>
+            <div class="col-md-9">@Model.ModifiedDate</div>
+        </div>
+    </div>
+</div>

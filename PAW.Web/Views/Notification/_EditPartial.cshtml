@@ -1,0 +1,41 @@
+﻿@model PAW.Models.DTO.NotificationDTO
+
+<form id="editNotificationForm">
+
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="CreatedAt" />
+
+    <div class="card mt-3 mb-3 shadow-sm">
+
+        <div class="card-header">
+            <h5 class="mb-0">Edit Notification</h5>
+        </div>
+
+        <div class="card-body">
+
+            <div class="mb-3">
+                <label asp-for="UserId" class="form-label"></label>
+                <input asp-for="UserId" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Message" class="form-label"></label>
+                <input asp-for="Message" class="form-control" />
+            </div>
+
+            <div class="form-check mb-3">
+                <input asp-for="IsRead" class="form-check-input" />
+                <label asp-for="IsRead" class="form-check-label"></label>
+            </div>
+
+            <button type="button"
+                    class="btn btn-success"
+                    onclick="saveNotificationEdit()">
+                Save
+            </button>
+
+        </div>
+
+    </div>
+
+</form>

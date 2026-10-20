@@ -19,8 +19,23 @@ namespace PAW.API.Controllers
             return components.Select(ComponentDTO.ConvertFrom);
         }
 
+        [HttpGet("{id}", Name = "GetComponentById")]
+        public async Task<ActionResult<ComponentDTO>> GetById(decimal id)
+        {
+            var components = await componentRepository.ReadAsync();
+
+            var component =
+                components.FirstOrDefault(x => x.Id == id);
+
+            if (component == null)
+                return NotFound();
+
+            return ComponentDTO.ConvertFrom(component);
+        }
+
         [HttpPost]
-        public async Task<bool> Save([FromBody] IEnumerable<Component> components)
+        public async Task<bool> Save(
+            [FromBody] IEnumerable<Component> components)
         {
             foreach (var component in components)
             {
@@ -33,9 +48,17 @@ namespace PAW.API.Controllers
             return true;
         }
 
-        [HttpDelete]
-        public async Task<bool> Delete(Component component)
+        [HttpDelete("{id}")]
+        public async Task<bool> Delete(decimal id)
         {
+            var components = await componentRepository.ReadAsync();
+
+            var component =
+                components.FirstOrDefault(x => x.Id == id);
+
+            if (component == null)
+                return false;
+
             return await componentRepository.DeleteAsync(component);
         }
     }

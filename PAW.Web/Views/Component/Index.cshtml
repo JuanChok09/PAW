@@ -4,43 +4,225 @@
     ViewData["Title"] = "Components";
 }
 
-<h1>Components</h1>
+<div class="container mt-4">
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Add Component</a>
-</p>
+    <div class="d-flex justify-content-between align-items-center mb-3">
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Content</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
+        <h2>Components</h2>
 
-    <tbody>
-        @foreach (var component in Model)
-        {
-            <tr>
-                <td>@component.Id</td>
-                <td>@component.Name</td>
-                <td>@component.Content</td>
-                <td>
-                    <a asp-action="Edit"
-                       asp-route-id="@component.Id"
-                       class="btn btn-warning">Edit</a>
+        <button type="button"
+                class="btn btn-primary"
+                onclick="loadComponentCreate()">
 
-                    <a asp-action="Details"
-                       asp-route-id="@component.Id"
-                       class="btn btn-info">Details</a>
+            <i class="bi bi-plus-circle"></i>
+            Add Component
 
-                    <a asp-action="Delete"
-                       asp-route-id="@component.Id"
-                       class="btn btn-danger">Delete</a>
-                </td>
-            </tr>
+        </button>
+
+    </div>
+
+    <div id="componentDetails"></div>
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-striped table-hover align-middle">
+
+                    <thead class="table-dark">
+
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Content</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var component in Model)
+                            {
+                                <tr>
+
+                                    <td>@component.Id</td>
+
+                                    <td>
+                                        <strong>@component.Name</strong>
+                                    </td>
+
+                                    <td>@component.Content</td>
+
+                                    <td class="text-center">
+
+                                        <div class="btn-group" role="group">
+
+                                            <button type="button"
+                                                    class="btn btn-sm btn-warning"
+                                                    onclick="loadComponentEdit(@component.Id)">
+                                                Edit
+                                            </button>
+
+                                            <button type="button"
+                                                    class="btn btn-sm btn-info"
+                                                    onclick="loadComponentDetails(@component.Id)">
+                                                Details
+                                            </button>
+
+                                            <button type="button"
+                                                    class="btn btn-sm btn-danger"
+                                                    onclick="deleteComponent(@component.Id)">
+                                                Delete
+                                            </button>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+
+                                <td colspan="4"
+                                    class="text-center">
+
+                                    No components found.
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <script>
+
+        async function loadComponentDetails(id) {
+
+            const response =
+                await fetch('/Component/Details?id=' + id);
+
+            const html =
+                await response.text();
+
+            document.getElementById('componentDetails')
+                .innerHTML = html;
         }
-    </tbody>
-</table>
+
+
+        async function loadComponentEdit(id) {
+
+            const response =
+                await fetch('/Component/Edit?id=' + id);
+
+            const html =
+                await response.text();
+
+            document.getElementById('componentDetails')
+                .innerHTML = html;
+        }
+
+
+        async function saveComponentEdit() {
+
+            const form =
+                document.getElementById('editComponentForm');
+
+            const formData =
+                new FormData(form);
+
+            const response =
+                await fetch('/Component/Edit', {
+                    method: 'POST',
+                    body: formData
+                });
+
+            const result =
+                await response.json();
+
+            if (result.success) {
+                location.reload();
+            }
+        }
+
+
+        async function loadComponentCreate() {
+
+            const response =
+                await fetch('/Component/Create');
+
+            const html =
+                await response.text();
+
+            document.getElementById('componentDetails')
+                .innerHTML = html;
+        }
+
+
+        async function saveComponentCreate() {
+
+            const form =
+                document.getElementById('createComponentForm');
+
+            const formData =
+                new FormData(form);
+
+            const response =
+                await fetch('/Component/Create', {
+                    method: 'POST',
+                    body: formData
+                });
+
+            const result =
+                await response.json();
+
+            if (result.success) {
+                location.reload();
+            }
+        }
+
+
+        async function deleteComponent(id) {
+
+            const confirmed =
+                confirm('Are you sure you want to delete this component?');
+
+            if (!confirmed) {
+                return;
+            }
+
+            const response =
+                await fetch('/Component/Delete?id=' + id, {
+                    method: 'POST'
+                });
+
+            const result =
+                await response.json();
+
+            if (result.success) {
+                location.reload();
+            }
+        }
+
+    </script>
+}

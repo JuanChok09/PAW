@@ -1,0 +1,28 @@
+﻿@model PAW.Models.DTO.UserActionDTO
+
+<div class="card mt-3 mb-3 shadow-sm">
+
+    <div class="card-header">
+        <h5 class="mb-0">User Action Details</h5>
+    </div>
+
+    <div class="card-body">
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">ID:</div>
+            <div class="col-md-9">@Model.Id</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Name:</div>
+            <div class="col-md-9">@Model.Name</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Description:</div>
+            <div class="col-md-9">@Model.Description</div>
+        </div>
+
+    </div>
+
+</div>

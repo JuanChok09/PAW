@@ -1,0 +1,30 @@
+﻿@model PAW.Models.DTO.RoleDTO
+
+<form id="editRoleForm">
+
+    <input type="hidden" asp-for="RoleId" />
+
+    <div class="card mt-3 mb-3 shadow-sm">
+
+        <div class="card-header">
+            <h5 class="mb-0">Edit Role</h5>
+        </div>
+
+        <div class="card-body">
+
+            <div class="mb-3">
+                <label asp-for="RoleName" class="form-label"></label>
+                <input asp-for="RoleName" class="form-control" />
+            </div>
+
+            <button type="button"
+                    class="btn btn-success"
+                    onclick="saveRoleEdit()">
+                Save
+            </button>
+
+        </div>
+
+    </div>
+
+</form>

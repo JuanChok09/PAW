@@ -7,20 +7,32 @@
 <div class="container mt-4">
 
     <div class="d-flex justify-content-between align-items-center mb-3">
+
         <h2>Categories</h2>
 
-        <a asp-action="Create" class="btn btn-primary">
+        <button type="button"
+                class="btn btn-primary"
+                onclick="loadCategoryCreate()">
+
             <i class="bi bi-plus-circle"></i>
             Add Category
-        </a>
+
+        </button>
+
     </div>
 
+    <div id="categoryDetails"></div>
+
     <div class="card shadow-sm">
+
         <div class="card-body">
+
             <div class="table-responsive">
 
                 <table class="table table-striped table-hover align-middle">
+
                     <thead class="table-dark">
+
                         <tr>
                             <th>Category ID</th>
                             <th>Name</th>
@@ -29,67 +41,205 @@
                             <th>Modified By</th>
                             <th class="text-center">Actions</th>
                         </tr>
+
                     </thead>
 
                     <tbody>
+
                         @if (Model != null && Model.Any())
                         {
                             foreach (var category in Model)
                             {
                                 <tr>
-                                    <td>@category.CategoryId</td>
 
                                     <td>
-                                        <strong>@category.CategoryName</strong>
+                                        @category.CategoryId
                                     </td>
 
-                                    <td>@category.Description</td>
+                                    <td>
+                                        <strong>
+                                            @category.CategoryName
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        @category.Description
+                                    </td>
 
                                     <td>
                                         @category.LastModified?.ToString("yyyy-MM-dd HH:mm")
                                     </td>
 
-                                    <td>@category.ModifiedBy</td>
+                                    <td>
+                                        @category.ModifiedBy
+                                    </td>
 
                                     <td class="text-center">
-                                        <div class="btn-group" role="group">
 
-                                            <a asp-action="Edit"
-                                               asp-route-id="@category.CategoryId"
-                                               class="btn btn-sm btn-warning">
+                                        <div class="btn-group"
+                                             role="group">
+
+                                            <button type="button"
+                                                    class="btn btn-sm btn-warning"
+                                                    onclick="loadCategoryEdit(@category.CategoryId)">
                                                 Edit
-                                            </a>
+                                            </button>
 
-                                            <a asp-action="Details"
-                                               asp-route-id="@category.CategoryId"
-                                               class="btn btn-sm btn-info">
+                                            <button type="button"
+                                                    class="btn btn-sm btn-info"
+                                                    onclick="loadCategoryDetails(@category.CategoryId)">
                                                 Details
-                                            </a>
+                                            </button>
 
-                                            <a asp-action="Delete"
-                                               asp-route-id="@category.CategoryId"
-                                               class="btn btn-sm btn-danger">
+                                            <button type="button"
+                                                    class="btn btn-sm btn-danger"
+                                                    onclick="deleteCategory(@category.CategoryId)">
                                                 Delete
-                                            </a>
+                                            </button>
 
                                         </div>
+
                                     </td>
+
                                 </tr>
                             }
                         }
                         else
                         {
                             <tr>
-                                <td colspan="6" class="text-center">
+
+                                <td colspan="6"
+                                    class="text-center">
+
                                     No categories found.
+
                                 </td>
+
                             </tr>
                         }
+
                     </tbody>
+
                 </table>
 
             </div>
+
         </div>
+
     </div>
 
 </div>
+
+@section Scripts {
+
+    <script>
+
+        async function loadCategoryDetails(id) {
+
+            const response =
+                await fetch('/Category/Details?id=' + id);
+
+            const html =
+                await response.text();
+
+            document.getElementById('categoryDetails')
+                .innerHTML = html;
+        }
+
+
+        async function loadCategoryEdit(id) {
+
+            const response =
+                await fetch('/Category/Edit?id=' + id);
+
+            const html =
+                await response.text();
+
+            document.getElementById('categoryDetails')
+                .innerHTML = html;
+        }
+
+
+        async function saveCategoryEdit() {
+
+            const form =
+                document.getElementById('editCategoryForm');
+
+            const formData =
+                new FormData(form);
+
+            const response =
+                await fetch('/Category/Edit', {
+                    method: 'POST',
+                    body: formData
+                });
+
+            const result =
+                await response.json();
+
+            if (result.success) {
+                location.reload();
+            }
+        }
+
+
+        async function loadCategoryCreate() {
+
+            const response =
+                await fetch('/Category/Create');
+
+            const html =
+                await response.text();
+
+            document.getElementById('categoryDetails')
+                .innerHTML = html;
+        }
+
+
+        async function saveCategoryCreate() {
+
+            const form =
+                document.getElementById('createCategoryForm');
+
+            const formData =
+                new FormData(form);
+
+            const response =
+                await fetch('/Category/Create', {
+                    method: 'POST',
+                    body: formData
+                });
+
+            const result =
+                await response.json();
+
+            if (result.success) {
+                location.reload();
+            }
+        }
+
+
+        async function deleteCategory(id) {
+
+            const confirmed =
+                confirm('Are you sure you want to delete this category?');
+
+            if (!confirmed) {
+                return;
+            }
+
+            const response =
+                await fetch('/Category/Delete?id=' + id, {
+                    method: 'POST'
+                });
+
+            const result =
+                await response.json();
+
+            if (result.success) {
+                location.reload();
+            }
+        }
+
+    </script>
+}

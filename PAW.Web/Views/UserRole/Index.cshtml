@@ -7,14 +7,21 @@
 <div class="container mt-4">
 
     <div class="d-flex justify-content-between align-items-center mb-3">
+
         <h2>User Roles</h2>
 
-        <a asp-action="Create" class="btn btn-primary">
+        <button type="button"
+                class="btn btn-primary"
+                onclick="loadUserRoleCreate()">
             Add User Role
-        </a>
+        </button>
+
     </div>
 
+    <div id="userRoleDetails"></div>
+
     <div class="card shadow-sm">
+
         <div class="card-body">
 
             <div class="table-responsive">
@@ -22,12 +29,14 @@
                 <table class="table table-striped table-hover align-middle">
 
                     <thead class="table-dark">
+
                         <tr>
                             <th>ID</th>
-                            <th>Rold ID</th>
+                            <th>Role ID</th>
                             <th>User ID</th>
                             <th class="text-center">Actions</th>
                         </tr>
+
                     </thead>
 
                     <tbody>
@@ -39,32 +48,30 @@
                                 <tr>
 
                                     <td>@userRole.Id</td>
-
                                     <td>@userRole.RoldId</td>
-
                                     <td>@userRole.UserId</td>
 
                                     <td class="text-center">
 
                                         <div class="btn-group" role="group">
 
-                                            <a asp-action="Edit"
-                                               asp-route-id="@userRole.Id"
-                                               class="btn btn-sm btn-warning">
+                                            <button type="button"
+                                                    class="btn btn-sm btn-warning"
+                                                    onclick="loadUserRoleEdit(@userRole.Id)">
                                                 Edit
-                                            </a>
+                                            </button>
 
-                                            <a asp-action="Details"
-                                               asp-route-id="@userRole.Id"
-                                               class="btn btn-sm btn-info">
+                                            <button type="button"
+                                                    class="btn btn-sm btn-info"
+                                                    onclick="loadUserRoleDetails(@userRole.Id)">
                                                 Details
-                                            </a>
+                                            </button>
 
-                                            <a asp-action="Delete"
-                                               asp-route-id="@userRole.Id"
-                                               class="btn btn-sm btn-danger">
+                                            <button type="button"
+                                                    class="btn btn-sm btn-danger"
+                                                    onclick="deleteUserRole(@userRole.Id)">
                                                 Delete
-                                            </a>
+                                            </button>
 
                                         </div>
 
@@ -76,9 +83,14 @@
                         else
                         {
                             <tr>
-                                <td colspan="4" class="text-center">
+
+                                <td colspan="4"
+                                    class="text-center">
+
                                     No user roles found.
+
                                 </td>
+
                             </tr>
                         }
 
@@ -89,6 +101,121 @@
             </div>
 
         </div>
+
     </div>
 
 </div>
+
+@section Scripts {
+
+    <script>
+
+        async function loadUserRoleDetails(id) {
+
+            const response =
+                await fetch('/UserRole/Details?id=' + id);
+
+            const html =
+                await response.text();
+
+            document.getElementById('userRoleDetails')
+                .innerHTML = html;
+        }
+
+
+        async function loadUserRoleEdit(id) {
+
+            const response =
+                await fetch('/UserRole/Edit?id=' + id);
+
+            const html =
+                await response.text();
+
+            document.getElementById('userRoleDetails')
+                .innerHTML = html;
+        }
+
+
+        async function saveUserRoleEdit() {
+
+            const form =
+                document.getElementById('editUserRoleForm');
+
+            const formData =
+                new FormData(form);
+
+            const response =
+                await fetch('/UserRole/Edit', {
+                    method: 'POST',
+                    body: formData
+                });
+
+            const result =
+                await response.json();
+
+            if (result.success) {
+                location.reload();
+            }
+        }
+
+
+        async function loadUserRoleCreate() {
+
+            const response =
+                await fetch('/UserRole/Create');
+
+            const html =
+                await response.text();
+
+            document.getElementById('userRoleDetails')
+                .innerHTML = html;
+        }
+
+
+        async function saveUserRoleCreate() {
+
+            const form =
+                document.getElementById('createUserRoleForm');
+
+            const formData =
+                new FormData(form);
+
+            const response =
+                await fetch('/UserRole/Create', {
+                    method: 'POST',
+                    body: formData
+                });
+
+            const result =
+                await response.json();
+
+            if (result.success) {
+                location.reload();
+            }
+        }
+
+
+        async function deleteUserRole(id) {
+
+            const confirmed =
+                confirm('Are you sure you want to delete this user role?');
+
+            if (!confirmed) {
+                return;
+            }
+
+            const response =
+                await fetch('/UserRole/Delete?id=' + id, {
+                    method: 'POST'
+                });
+
+            const result =
+                await response.json();
+
+            if (result.success) {
+                location.reload();
+            }
+        }
+
+    </script>
+}

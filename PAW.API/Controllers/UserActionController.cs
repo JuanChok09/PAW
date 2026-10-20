@@ -14,14 +14,20 @@ namespace PAW.API.Controllers
         [HttpGet(Name = "GetUserActions")]
         public async Task<IEnumerable<UserActionDTO>> GetAll()
         {
-            var userActions = await userActionRepository.ReadAsync() ?? [];
+            var userActions =
+                await userActionRepository.ReadAsync() ?? [];
+
             return userActions.Select(UserActionDTO.ConvertFrom);
         }
 
-        [HttpGet("{id:int}", Name = "GetUserActionById")]
-        public async Task<ActionResult<UserActionDTO>> GetById(int id)
+        [HttpGet("{id}", Name = "GetUserActionById")]
+        public async Task<ActionResult<UserActionDTO>> GetById(decimal id)
         {
-            var userAction = await userActionRepository.FindAsync(id);
+            var userActions =
+                await userActionRepository.ReadAsync();
+
+            var userAction =
+                userActions.FirstOrDefault(x => x.Id == id);
 
             if (userAction == null)
                 return NotFound();
@@ -30,22 +36,46 @@ namespace PAW.API.Controllers
         }
 
         [HttpPost]
-        public async Task<bool> Save([FromBody] IEnumerable<UserAction> userActions)
+        public async Task<bool> Save(
+            [FromBody] IEnumerable<UserAction> userActions)
         {
             foreach (var userAction in userActions)
             {
-                if (userAction.Id.GetValueOrDefault() > 0)
-                    await userActionRepository.UpdateAsync(userAction);
+                var existingItems =
+                    await userActionRepository.ReadAsync();
+
+                var existing =
+                    existingItems.FirstOrDefault(
+                        x => x.Id == userAction.Id);
+
+                if (existing != null)
+                {
+                    existing.Name = userAction.Name;
+                    existing.Description = userAction.Description;
+
+                    await userActionRepository.UpdateAsync(existing);
+                }
                 else
+                {
                     await userActionRepository.CreateAsync(userAction);
+                }
             }
 
             return true;
         }
 
-        [HttpDelete]
-        public async Task<bool> Delete(UserAction userAction)
+        [HttpDelete("{id}")]
+        public async Task<bool> Delete(decimal id)
         {
+            var userActions =
+                await userActionRepository.ReadAsync();
+
+            var userAction =
+                userActions.FirstOrDefault(x => x.Id == id);
+
+            if (userAction == null)
+                return false;
+
             return await userActionRepository.DeleteAsync(userAction);
         }
     }

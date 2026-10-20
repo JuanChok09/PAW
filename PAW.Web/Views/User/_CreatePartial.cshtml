@@ -1,0 +1,53 @@
+﻿@model PAW.Models.DTO.UserDTO
+
+<form id="createUserForm">
+
+    <div class="card mt-3 mb-3 shadow-sm">
+
+        <div class="card-header">
+            <h5 class="mb-0">Add User</h5>
+        </div>
+
+        <div class="card-body">
+
+            <div class="mb-3">
+                <label asp-for="Username" class="form-label"></label>
+                <input asp-for="Username" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" />
+            </div>
+
+            <div class="form-check mb-3">
+                <input asp-for="IsActive" class="form-check-input" />
+                <label asp-for="IsActive" class="form-check-label"></label>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="RoleId" class="form-label"></label>
+                <input asp-for="RoleId" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ModifiedBy" class="form-label"></label>
+                <input asp-for="ModifiedBy" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="LastModifiedBy" class="form-label"></label>
+                <input asp-for="LastModifiedBy" class="form-control" />
+            </div>
+
+            <button type="button"
+                    class="btn btn-success"
+                    onclick="saveUserCreate()">
+                Save
+            </button>
+
+        </div>
+
+    </div>
+
+</form>

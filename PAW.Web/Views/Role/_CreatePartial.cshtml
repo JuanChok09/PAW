@@ -1,0 +1,28 @@
+﻿@model PAW.Models.DTO.RoleDTO
+
+<form id="createRoleForm">
+
+    <div class="card mt-3 mb-3 shadow-sm">
+
+        <div class="card-header">
+            <h5 class="mb-0">Add Role</h5>
+        </div>
+
+        <div class="card-body">
+
+            <div class="mb-3">
+                <label asp-for="RoleName" class="form-label"></label>
+                <input asp-for="RoleName" class="form-control" />
+            </div>
+
+            <button type="button"
+                    class="btn btn-success"
+                    onclick="saveRoleCreate()">
+                Save
+            </button>
+
+        </div>
+
+    </div>
+
+</form>

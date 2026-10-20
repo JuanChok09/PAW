@@ -1,0 +1,48 @@
+﻿@model PAW.Models.DTO.InventoryDTO
+
+<div class="card mt-3 mb-3 shadow-sm">
+
+    <div class="card-header">
+        <h5 class="mb-0">Inventory Details</h5>
+    </div>
+
+    <div class="card-body">
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Inventory ID:</div>
+            <div class="col-md-9">@Model.InventoryId</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Unit Price:</div>
+            <div class="col-md-9">@Model.UnitPrice</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Units In Stock:</div>
+            <div class="col-md-9">@Model.UnitsInStock</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Product ID:</div>
+            <div class="col-md-9">@Model.ProductId</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Date Added:</div>
+            <div class="col-md-9">@Model.DateAdded</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Last Updated:</div>
+            <div class="col-md-9">@Model.LastUpdated</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Modified By:</div>
+            <div class="col-md-9">@Model.ModifiedBy</div>
+        </div>
+
+    </div>
+
+</div>

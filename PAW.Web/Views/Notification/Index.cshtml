@@ -7,15 +7,24 @@
 <div class="container mt-4">
 
     <div class="d-flex justify-content-between align-items-center mb-3">
+
         <h2>Notifications</h2>
 
-        <a asp-action="Create" class="btn btn-primary">
+        <button type="button"
+                class="btn btn-primary"
+                onclick="loadNotificationCreate()">
+
             <i class="bi bi-plus-circle"></i>
             Add Notification
-        </a>
+
+        </button>
+
     </div>
 
+    <div id="notificationDetails"></div>
+
     <div class="card shadow-sm">
+
         <div class="card-body">
 
             <div class="table-responsive">
@@ -23,6 +32,7 @@
                 <table class="table table-striped table-hover align-middle">
 
                     <thead class="table-dark">
+
                         <tr>
                             <th>ID</th>
                             <th>User ID</th>
@@ -31,6 +41,7 @@
                             <th>Created At</th>
                             <th class="text-center">Actions</th>
                         </tr>
+
                     </thead>
 
                     <tbody>
@@ -41,47 +52,39 @@
                             {
                                 <tr>
 
-                                    <td>
-                                        @notification.Id
-                                    </td>
+                                    <td>@notification.Id</td>
+
+                                    <td>@notification.UserId</td>
+
+                                    <td>@notification.Message</td>
+
+                                    <td>@notification.IsRead</td>
 
                                     <td>
-                                        @notification.UserId
-                                    </td>
-
-                                    <td>
-                                        @notification.Message
-                                    </td>
-
-                                    <td>
-                                        @notification.IsRead
-                                    </td>
-
-                                    <td>
-                                        @(notification.CreatedAt?.ToString("yyyy-MM-dd HH:mm"))
+                                        @notification.CreatedAt?.ToString("yyyy-MM-dd HH:mm")
                                     </td>
 
                                     <td class="text-center">
 
                                         <div class="btn-group" role="group">
 
-                                            <a asp-action="Edit"
-                                               asp-route-id="@notification.Id"
-                                               class="btn btn-sm btn-warning">
+                                            <button type="button"
+                                                    class="btn btn-sm btn-warning"
+                                                    onclick="loadNotificationEdit(@notification.Id)">
                                                 Edit
-                                            </a>
+                                            </button>
 
-                                            <a asp-action="Details"
-                                               asp-route-id="@notification.Id"
-                                               class="btn btn-sm btn-info">
+                                            <button type="button"
+                                                    class="btn btn-sm btn-info"
+                                                    onclick="loadNotificationDetails(@notification.Id)">
                                                 Details
-                                            </a>
+                                            </button>
 
-                                            <a asp-action="Delete"
-                                               asp-route-id="@notification.Id"
-                                               class="btn btn-sm btn-danger">
+                                            <button type="button"
+                                                    class="btn btn-sm btn-danger"
+                                                    onclick="deleteNotification(@notification.Id)">
                                                 Delete
-                                            </a>
+                                            </button>
 
                                         </div>
 
@@ -93,9 +96,14 @@
                         else
                         {
                             <tr>
-                                <td colspan="6" class="text-center">
+
+                                <td colspan="6"
+                                    class="text-center">
+
                                     No notifications found.
+
                                 </td>
+
                             </tr>
                         }
 
@@ -106,6 +114,121 @@
             </div>
 
         </div>
+
     </div>
 
 </div>
+
+@section Scripts {
+
+    <script>
+
+        async function loadNotificationDetails(id) {
+
+            const response =
+                await fetch('/Notification/Details?id=' + id);
+
+            const html =
+                await response.text();
+
+            document.getElementById('notificationDetails')
+                .innerHTML = html;
+        }
+
+
+        async function loadNotificationEdit(id) {
+
+            const response =
+                await fetch('/Notification/Edit?id=' + id);
+
+            const html =
+                await response.text();
+
+            document.getElementById('notificationDetails')
+                .innerHTML = html;
+        }
+
+
+        async function saveNotificationEdit() {
+
+            const form =
+                document.getElementById('editNotificationForm');
+
+            const formData =
+                new FormData(form);
+
+            const response =
+                await fetch('/Notification/Edit', {
+                    method: 'POST',
+                    body: formData
+                });
+
+            const result =
+                await response.json();
+
+            if (result.success) {
+                location.reload();
+            }
+        }
+
+
+        async function loadNotificationCreate() {
+
+            const response =
+                await fetch('/Notification/Create');
+
+            const html =
+                await response.text();
+
+            document.getElementById('notificationDetails')
+                .innerHTML = html;
+        }
+
+
+        async function saveNotificationCreate() {
+
+            const form =
+                document.getElementById('createNotificationForm');
+
+            const formData =
+                new FormData(form);
+
+            const response =
+                await fetch('/Notification/Create', {
+                    method: 'POST',
+                    body: formData
+                });
+
+            const result =
+                await response.json();
+
+            if (result.success) {
+                location.reload();
+            }
+        }
+
+
+        async function deleteNotification(id) {
+
+            const confirmed =
+                confirm('Are you sure you want to delete this notification?');
+
+            if (!confirmed) {
+                return;
+            }
+
+            const response =
+                await fetch('/Notification/Delete?id=' + id, {
+                    method: 'POST'
+                });
+
+            const result =
+                await response.json();
+
+            if (result.success) {
+                location.reload();
+            }
+        }
+
+    </script>
+}

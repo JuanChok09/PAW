@@ -43,9 +43,15 @@ namespace PAW.API.Controllers
             return true;
         }
 
-        [HttpDelete]
-        public async Task<bool> Delete(Role role)
+        [HttpDelete("{id:int}")]
+        public async Task<bool> Delete(int id)
         {
+            var role =
+                await roleRepository.FindAsync(id);
+
+            if (role == null)
+                return false;
+
             return await roleRepository.DeleteAsync(role);
         }
     }

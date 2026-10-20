@@ -1,0 +1,58 @@
+﻿@model PAW.Models.DTO.UserDTO
+
+<div class="card mt-3 mb-3 shadow-sm">
+
+    <div class="card-header">
+        <h5 class="mb-0">User Details</h5>
+    </div>
+
+    <div class="card-body">
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">User ID:</div>
+            <div class="col-md-9">@Model.UserId</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Username:</div>
+            <div class="col-md-9">@Model.Username</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Email:</div>
+            <div class="col-md-9">@Model.Email</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Created At:</div>
+            <div class="col-md-9">@Model.CreatedAt</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Is Active:</div>
+            <div class="col-md-9">@Model.IsActive</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Role ID:</div>
+            <div class="col-md-9">@Model.RoleId</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Last Modified:</div>
+            <div class="col-md-9">@Model.LastModified</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Modified By:</div>
+            <div class="col-md-9">@Model.ModifiedBy</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Last Modified By:</div>
+            <div class="col-md-9">@Model.LastModifiedBy</div>
+        </div>
+
+    </div>
+
+</div>

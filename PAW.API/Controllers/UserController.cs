@@ -14,14 +14,17 @@ namespace PAW.API.Controllers
         [HttpGet(Name = "GetUsers")]
         public async Task<IEnumerable<UserDTO>> GetAll()
         {
-            var users = await userRepository.ReadAsync() ?? [];
+            var users =
+                await userRepository.ReadAsync() ?? [];
+
             return users.Select(UserDTO.ConvertFrom);
         }
 
         [HttpGet("{id:int}", Name = "GetUserById")]
         public async Task<ActionResult<UserDTO>> GetById(int id)
         {
-            var user = await userRepository.FindAsync(id);
+            var user =
+                await userRepository.FindAsync(id);
 
             if (user == null)
                 return NotFound();
@@ -30,22 +33,47 @@ namespace PAW.API.Controllers
         }
 
         [HttpPost]
-        public async Task<bool> Save([FromBody] IEnumerable<User> users)
+        public async Task<bool> Save(
+            [FromBody] IEnumerable<User> users)
         {
             foreach (var user in users)
             {
                 if (user.UserId > 0)
-                    await userRepository.UpdateAsync(user);
+                {
+                    var existingUser =
+                        await userRepository.FindAsync(user.UserId);
+
+                    if (existingUser == null)
+                        continue;
+
+                    existingUser.Username = user.Username;
+                    existingUser.Email = user.Email;
+                    existingUser.IsActive = user.IsActive;
+                    existingUser.LastModified = user.LastModified;
+                    existingUser.ModifiedBy = user.ModifiedBy;
+                    existingUser.RoleId = user.RoleId;
+                    existingUser.LastModifiedBy = user.LastModifiedBy;
+
+                    await userRepository.UpdateAsync(existingUser);
+                }
                 else
+                {
                     await userRepository.CreateAsync(user);
+                }
             }
 
             return true;
         }
 
-        [HttpDelete]
-        public async Task<bool> Delete(User user)
+        [HttpDelete("{id:int}")]
+        public async Task<bool> Delete(int id)
         {
+            var user =
+                await userRepository.FindAsync(id);
+
+            if (user == null)
+                return false;
+
             return await userRepository.DeleteAsync(user);
         }
     }

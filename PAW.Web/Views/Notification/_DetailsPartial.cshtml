@@ -1,0 +1,38 @@
+﻿@model PAW.Models.DTO.NotificationDTO
+
+<div class="card mt-3 mb-3 shadow-sm">
+
+    <div class="card-header">
+        <h5 class="mb-0">Notification Details</h5>
+    </div>
+
+    <div class="card-body">
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">ID:</div>
+            <div class="col-md-9">@Model.Id</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">User ID:</div>
+            <div class="col-md-9">@Model.UserId</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Message:</div>
+            <div class="col-md-9">@Model.Message</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Is Read:</div>
+            <div class="col-md-9">@Model.IsRead</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Created At:</div>
+            <div class="col-md-9">@Model.CreatedAt</div>
+        </div>
+
+    </div>
+
+</div>

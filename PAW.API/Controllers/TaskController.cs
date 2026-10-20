@@ -41,10 +41,15 @@ namespace PAW.API.Controllers
 
             return true;
         }
-
-        [HttpDelete]
-        public async Task<bool> Delete(PAW.Models.Task task)
+        [HttpDelete("{id:int}")]
+        public async Task<bool> Delete(int id)
         {
+            var task =
+                await taskRepository.FindAsync(id);
+
+            if (task == null)
+                return false;
+
             return await taskRepository.DeleteAsync(task);
         }
     }

@@ -7,15 +7,24 @@
 <div class="container mt-4">
 
     <div class="d-flex justify-content-between align-items-center mb-3">
+
         <h2>Roles</h2>
 
-        <a asp-action="Create" class="btn btn-primary">
+        <button type="button"
+                class="btn btn-primary"
+                onclick="loadRoleCreate()">
+
             <i class="bi bi-plus-circle"></i>
             Add Role
-        </a>
+
+        </button>
+
     </div>
 
+    <div id="roleDetails"></div>
+
     <div class="card shadow-sm">
+
         <div class="card-body">
 
             <div class="table-responsive">
@@ -23,11 +32,13 @@
                 <table class="table table-striped table-hover align-middle">
 
                     <thead class="table-dark">
+
                         <tr>
                             <th>Role ID</th>
                             <th>Role Name</th>
                             <th class="text-center">Actions</th>
                         </tr>
+
                     </thead>
 
                     <tbody>
@@ -38,35 +49,33 @@
                             {
                                 <tr>
 
-                                    <td>
-                                        @role.RoleId
-                                    </td>
+                                    <td>@role.RoleId</td>
 
                                     <td>
-                                        @role.RoleName
+                                        <strong>@role.RoleName</strong>
                                     </td>
 
                                     <td class="text-center">
 
                                         <div class="btn-group" role="group">
 
-                                            <a asp-action="Edit"
-                                               asp-route-id="@role.RoleId"
-                                               class="btn btn-sm btn-warning">
+                                            <button type="button"
+                                                    class="btn btn-sm btn-warning"
+                                                    onclick="loadRoleEdit(@role.RoleId)">
                                                 Edit
-                                            </a>
+                                            </button>
 
-                                            <a asp-action="Details"
-                                               asp-route-id="@role.RoleId"
-                                               class="btn btn-sm btn-info">
+                                            <button type="button"
+                                                    class="btn btn-sm btn-info"
+                                                    onclick="loadRoleDetails(@role.RoleId)">
                                                 Details
-                                            </a>
+                                            </button>
 
-                                            <a asp-action="Delete"
-                                               asp-route-id="@role.RoleId"
-                                               class="btn btn-sm btn-danger">
+                                            <button type="button"
+                                                    class="btn btn-sm btn-danger"
+                                                    onclick="deleteRole(@role.RoleId)">
                                                 Delete
-                                            </a>
+                                            </button>
 
                                         </div>
 
@@ -78,9 +87,14 @@
                         else
                         {
                             <tr>
-                                <td colspan="3" class="text-center">
+
+                                <td colspan="3"
+                                    class="text-center">
+
                                     No roles found.
+
                                 </td>
+
                             </tr>
                         }
 
@@ -91,6 +105,121 @@
             </div>
 
         </div>
+
     </div>
 
 </div>
+
+@section Scripts {
+
+    <script>
+
+        async function loadRoleDetails(id) {
+
+            const response =
+                await fetch('/Role/Details?id=' + id);
+
+            const html =
+                await response.text();
+
+            document.getElementById('roleDetails')
+                .innerHTML = html;
+        }
+
+
+        async function loadRoleEdit(id) {
+
+            const response =
+                await fetch('/Role/Edit?id=' + id);
+
+            const html =
+                await response.text();
+
+            document.getElementById('roleDetails')
+                .innerHTML = html;
+        }
+
+
+        async function saveRoleEdit() {
+
+            const form =
+                document.getElementById('editRoleForm');
+
+            const formData =
+                new FormData(form);
+
+            const response =
+                await fetch('/Role/Edit', {
+                    method: 'POST',
+                    body: formData
+                });
+
+            const result =
+                await response.json();
+
+            if (result.success) {
+                location.reload();
+            }
+        }
+
+
+        async function loadRoleCreate() {
+
+            const response =
+                await fetch('/Role/Create');
+
+            const html =
+                await response.text();
+
+            document.getElementById('roleDetails')
+                .innerHTML = html;
+        }
+
+
+        async function saveRoleCreate() {
+
+            const form =
+                document.getElementById('createRoleForm');
+
+            const formData =
+                new FormData(form);
+
+            const response =
+                await fetch('/Role/Create', {
+                    method: 'POST',
+                    body: formData
+                });
+
+            const result =
+                await response.json();
+
+            if (result.success) {
+                location.reload();
+            }
+        }
+
+
+        async function deleteRole(id) {
+
+            const confirmed =
+                confirm('Are you sure you want to delete this role?');
+
+            if (!confirmed) {
+                return;
+            }
+
+            const response =
+                await fetch('/Role/Delete?id=' + id, {
+                    method: 'POST'
+                });
+
+            const result =
+                await response.json();
+
+            if (result.success) {
+                location.reload();
+            }
+        }
+
+    </script>
+}

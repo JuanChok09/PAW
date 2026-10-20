@@ -1,0 +1,53 @@
+﻿@model PAW.Models.DTO.TaskDTO
+
+<div class="card mt-3 mb-3 shadow-sm">
+
+    <div class="card-header">
+        <h5 class="mb-0">Task Details</h5>
+    </div>
+
+    <div class="card-body">
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">ID:</div>
+            <div class="col-md-9">@Model.Id</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Name:</div>
+            <div class="col-md-9">@Model.Name</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Description:</div>
+            <div class="col-md-9">@Model.Description</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Status:</div>
+            <div class="col-md-9">@Model.Status</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Due Date:</div>
+            <div class="col-md-9">@Model.DueDate</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Created At:</div>
+            <div class="col-md-9">@Model.CreatedAt</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Last Modified:</div>
+            <div class="col-md-9">@Model.LastModified</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Modified By:</div>
+            <div class="col-md-9">@Model.ModifiedBy</div>
+        </div>
+
+    </div>
+
+</div>

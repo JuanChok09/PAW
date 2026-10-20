@@ -7,15 +7,24 @@
 <div class="container mt-4">
 
     <div class="d-flex justify-content-between align-items-center mb-3">
+
         <h2>Inventory</h2>
 
-        <a asp-action="Create" class="btn btn-primary">
+        <button type="button"
+                class="btn btn-primary"
+                onclick="loadInventoryCreate()">
+
             <i class="bi bi-plus-circle"></i>
             Add Inventory
-        </a>
+
+        </button>
+
     </div>
 
+    <div id="inventoryDetails"></div>
+
     <div class="card shadow-sm">
+
         <div class="card-body">
 
             <div class="table-responsive">
@@ -23,6 +32,7 @@
                 <table class="table table-striped table-hover align-middle">
 
                     <thead class="table-dark">
+
                         <tr>
                             <th>Inventory ID</th>
                             <th>Unit Price</th>
@@ -33,6 +43,7 @@
                             <th>Modified By</th>
                             <th class="text-center">Actions</th>
                         </tr>
+
                     </thead>
 
                     <tbody>
@@ -52,11 +63,11 @@
                                     <td>@inventory.ProductId</td>
 
                                     <td>
-                                        @(inventory.DateAdded?.ToString("yyyy-MM-dd HH:mm"))
+                                        @inventory.DateAdded?.ToString("yyyy-MM-dd HH:mm")
                                     </td>
 
                                     <td>
-                                        @(inventory.LastUpdated?.ToString("yyyy-MM-dd HH:mm"))
+                                        @inventory.LastUpdated?.ToString("yyyy-MM-dd HH:mm")
                                     </td>
 
                                     <td>@inventory.ModifiedBy</td>
@@ -65,26 +76,23 @@
 
                                         <div class="btn-group" role="group">
 
-                                            <!-- Edit -->
-                                            <a asp-action="Edit"
-                                               asp-route-id="@inventory.InventoryId"
-                                               class="btn btn-sm btn-warning">
+                                            <button type="button"
+                                                    class="btn btn-sm btn-warning"
+                                                    onclick="loadInventoryEdit(@inventory.InventoryId)">
                                                 Edit
-                                            </a>
+                                            </button>
 
-                                            <!-- Details -->
-                                            <a asp-action="Details"
-                                               asp-route-id="@inventory.InventoryId"
-                                               class="btn btn-sm btn-info">
+                                            <button type="button"
+                                                    class="btn btn-sm btn-info"
+                                                    onclick="loadInventoryDetails(@inventory.InventoryId)">
                                                 Details
-                                            </a>
+                                            </button>
 
-                                            <!-- Delete -->
-                                            <a asp-action="Delete"
-                                               asp-route-id="@inventory.InventoryId"
-                                               class="btn btn-sm btn-danger">
+                                            <button type="button"
+                                                    class="btn btn-sm btn-danger"
+                                                    onclick="deleteInventory(@inventory.InventoryId)">
                                                 Delete
-                                            </a>
+                                            </button>
 
                                         </div>
 
@@ -96,9 +104,14 @@
                         else
                         {
                             <tr>
-                                <td colspan="8" class="text-center">
+
+                                <td colspan="8"
+                                    class="text-center">
+
                                     No inventory records found.
+
                                 </td>
+
                             </tr>
                         }
 
@@ -109,6 +122,121 @@
             </div>
 
         </div>
+
     </div>
 
 </div>
+
+@section Scripts {
+
+    <script>
+
+        async function loadInventoryDetails(id) {
+
+            const response =
+                await fetch('/Inventory/Details?id=' + id);
+
+            const html =
+                await response.text();
+
+            document.getElementById('inventoryDetails')
+                .innerHTML = html;
+        }
+
+
+        async function loadInventoryEdit(id) {
+
+            const response =
+                await fetch('/Inventory/Edit?id=' + id);
+
+            const html =
+                await response.text();
+
+            document.getElementById('inventoryDetails')
+                .innerHTML = html;
+        }
+
+
+        async function saveInventoryEdit() {
+
+            const form =
+                document.getElementById('editInventoryForm');
+
+            const formData =
+                new FormData(form);
+
+            const response =
+                await fetch('/Inventory/Edit', {
+                    method: 'POST',
+                    body: formData
+                });
+
+            const result =
+                await response.json();
+
+            if (result.success) {
+                location.reload();
+            }
+        }
+
+
+        async function loadInventoryCreate() {
+
+            const response =
+                await fetch('/Inventory/Create');
+
+            const html =
+                await response.text();
+
+            document.getElementById('inventoryDetails')
+                .innerHTML = html;
+        }
+
+
+        async function saveInventoryCreate() {
+
+            const form =
+                document.getElementById('createInventoryForm');
+
+            const formData =
+                new FormData(form);
+
+            const response =
+                await fetch('/Inventory/Create', {
+                    method: 'POST',
+                    body: formData
+                });
+
+            const result =
+                await response.json();
+
+            if (result.success) {
+                location.reload();
+            }
+        }
+
+
+        async function deleteInventory(id) {
+
+            const confirmed =
+                confirm('Are you sure you want to delete this inventory record?');
+
+            if (!confirmed) {
+                return;
+            }
+
+            const response =
+                await fetch('/Inventory/Delete?id=' + id, {
+                    method: 'POST'
+                });
+
+            const result =
+                await response.json();
+
+            if (result.success) {
+                location.reload();
+            }
+        }
+
+    </script>
+}

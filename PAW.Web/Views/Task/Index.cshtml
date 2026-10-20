@@ -7,14 +7,23 @@
 <div class="container mt-4">
 
     <div class="d-flex justify-content-between align-items-center mb-3">
+
         <h2>Tasks</h2>
 
-        <a asp-action="Create" class="btn btn-primary">
+        <button type="button"
+                class="btn btn-primary"
+                onclick="loadTaskCreate()">
+
             Add Task
-        </a>
+
+        </button>
+
     </div>
 
+    <div id="taskDetails"></div>
+
     <div class="card shadow-sm">
+
         <div class="card-body">
 
             <div class="table-responsive">
@@ -22,6 +31,7 @@
                 <table class="table table-striped table-hover align-middle">
 
                     <thead class="table-dark">
+
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
@@ -33,6 +43,7 @@
                             <th>Modified By</th>
                             <th class="text-center">Actions</th>
                         </tr>
+
                     </thead>
 
                     <tbody>
@@ -42,55 +53,60 @@
                             foreach (var task in Model)
                             {
                                 <tr>
+
                                     <td>@task.Id</td>
                                     <td>@task.Name</td>
                                     <td>@task.Description</td>
                                     <td>@task.Status</td>
 
                                     <td>
-                                        @(task.DueDate?.ToString("yyyy-MM-dd HH:mm"))
+                                        @task.DueDate?.ToString("yyyy-MM-dd HH:mm")
                                     </td>
 
                                     <td>
-                                        @(task.CreatedAt?.ToString("yyyy-MM-dd HH:mm"))
+                                        @task.CreatedAt?.ToString("yyyy-MM-dd HH:mm")
                                     </td>
 
                                     <td>
-                                        @(task.LastModified?.ToString("yyyy-MM-dd HH:mm"))
+                                        @task.LastModified?.ToString("yyyy-MM-dd HH:mm")
                                     </td>
 
                                     <td>@task.ModifiedBy</td>
 
                                     <td class="text-center">
+
                                         <div class="btn-group" role="group">
 
-                                            <a asp-action="Edit"
-                                               asp-route-id="@task.Id"
-                                               class="btn btn-sm btn-warning">
+                                            <button type="button"
+                                                    class="btn btn-sm btn-warning"
+                                                    onclick="loadTaskEdit(@task.Id)">
                                                 Edit
-                                            </a>
+                                            </button>
 
-                                            <a asp-action="Details"
-                                               asp-route-id="@task.Id"
-                                               class="btn btn-sm btn-info">
+                                            <button type="button"
+                                                    class="btn btn-sm btn-info"
+                                                    onclick="loadTaskDetails(@task.Id)">
                                                 Details
-                                            </a>
+                                            </button>
 
-                                            <a asp-action="Delete"
-                                               asp-route-id="@task.Id"
-                                               class="btn btn-sm btn-danger">
+                                            <button type="button"
+                                                    class="btn btn-sm btn-danger"
+                                                    onclick="deleteTask(@task.Id)">
                                                 Delete
-                                            </a>
+                                            </button>
 
                                         </div>
+
                                     </td>
+
                                 </tr>
                             }
                         }
                         else
                         {
                             <tr>
-                                <td colspan="9" class="text-center">
+                                <td colspan="9"
+                                    class="text-center">
                                     No tasks found.
                                 </td>
                             </tr>
@@ -103,6 +119,121 @@
             </div>
 
         </div>
+
     </div>
 
 </div>
+
+@section Scripts {
+
+    <script>
+
+        async function loadTaskDetails(id) {
+
+            const response =
+                await fetch('/Task/Details?id=' + id);
+
+            const html =
+                await response.text();
+
+            document.getElementById('taskDetails')
+                .innerHTML = html;
+        }
+
+
+        async function loadTaskEdit(id) {
+
+            const response =
+                await fetch('/Task/Edit?id=' + id);
+
+            const html =
+                await response.text();
+
+            document.getElementById('taskDetails')
+                .innerHTML = html;
+        }
+
+
+        async function saveTaskEdit() {
+
+            const form =
+                document.getElementById('editTaskForm');
+
+            const formData =
+                new FormData(form);
+
+            const response =
+                await fetch('/Task/Edit', {
+                    method: 'POST',
+                    body: formData
+                });
+
+            const result =
+                await response.json();
+
+            if (result.success) {
+                location.reload();
+            }
+        }
+
+
+        async function loadTaskCreate() {
+
+            const response =
+                await fetch('/Task/Create');
+
+            const html =
+                await response.text();
+
+            document.getElementById('taskDetails')
+                .innerHTML = html;
+        }
+
+
+        async function saveTaskCreate() {
+
+            const form =
+                document.getElementById('createTaskForm');
+
+            const formData =
+                new FormData(form);
+
+            const response =
+                await fetch('/Task/Create', {
+                    method: 'POST',
+                    body: formData
+                });
+
+            const result =
+                await response.json();
+
+            if (result.success) {
+                location.reload();
+            }
+        }
+
+
+        async function deleteTask(id) {
+
+            const confirmed =
+                confirm('Are you sure you want to delete this task?');
+
+            if (!confirmed) {
+                return;
+            }
+
+            const response =
+                await fetch('/Task/Delete?id=' + id, {
+                    method: 'POST'
+                });
+
+            const result =
+                await response.json();
+
+            if (result.success) {
+                location.reload();
+            }
+        }
+
+    </script>
+}

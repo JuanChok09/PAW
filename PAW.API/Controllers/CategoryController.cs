@@ -43,9 +43,14 @@ namespace PAW.API.Controllers
             return true;
         }
 
-        [HttpDelete]
-        public async Task<bool> Delete(Category category)
+        [HttpDelete("{id:int}")]
+        public async Task<bool> Delete(int id)
         {
+            var category = await categoryRepository.FindAsync(id);
+
+            if (category == null)
+                return false;
+
             return await categoryRepository.DeleteAsync(category);
         }
     }

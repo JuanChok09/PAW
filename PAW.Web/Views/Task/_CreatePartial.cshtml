@@ -1,0 +1,50 @@
+﻿@model PAW.Models.DTO.TaskDTO
+
+<form id="createTaskForm">
+
+    <div class="card mt-3 mb-3 shadow-sm">
+
+        <div class="card-header">
+            <h5 class="mb-0">Add Task</h5>
+        </div>
+
+        <div class="card-body">
+
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label"></label>
+                <input asp-for="Description" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Status" class="form-label"></label>
+                <input asp-for="Status" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="DueDate" class="form-label"></label>
+                <input asp-for="DueDate"
+                       type="datetime-local"
+                       class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ModifiedBy" class="form-label"></label>
+                <input asp-for="ModifiedBy" class="form-control" />
+            </div>
+
+            <button type="button"
+                    class="btn btn-success"
+                    onclick="saveTaskCreate()">
+                Save
+            </button>
+
+        </div>
+
+    </div>
+
+</form>

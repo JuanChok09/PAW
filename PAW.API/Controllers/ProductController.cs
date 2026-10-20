@@ -37,8 +37,9 @@ namespace PAW.API.Controllers
             foreach (var p in Products)
             {
                 if (p.ProductId > 0)
+                    await productRepository.UpdateAsync(p);
+                else
                     await productRepository.CreateAsync(p);
-                else await productRepository.UpdateAsync(p);
             }
 
             /*Products.ToList().ForEach(async x =>
@@ -50,10 +51,15 @@ namespace PAW.API.Controllers
             return true;
         }
 
-        [HttpDelete]
-        public async Task<bool> Delete(Product Product)
+        [HttpDelete("{id:int}")]
+        public async Task<bool> Delete(int id)
         {
-            return await productRepository.DeleteAsync(Product);
+            var product = await productRepository.FindAsync(id);
+
+            if (product == null)
+                return false;
+
+            return await productRepository.DeleteAsync(product);
         }
     }
 }

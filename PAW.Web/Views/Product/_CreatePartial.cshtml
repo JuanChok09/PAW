@@ -1,0 +1,46 @@
+﻿@model PAW.Models.DTO.ProductDTO
+
+<form id="createProductForm">
+
+    <div class="card mt-3 mb-3 shadow-sm">
+        <div class="card-header">
+            <h5 class="mb-0">Add Product</h5>
+        </div>
+
+        <div class="card-body">
+
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label"></label>
+                <input asp-for="Description" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Rating" class="form-label"></label>
+                <input asp-for="Rating" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="CreatedBy" class="form-label"></label>
+                <input asp-for="CreatedBy" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ModifiedBy" class="form-label"></label>
+                <input asp-for="ModifiedBy" class="form-control" />
+            </div>
+
+            <button type="button"
+                    class="btn btn-success"
+                    onclick="saveProductCreate()">
+                Save
+            </button>
+
+        </div>
+    </div>
+
+</form>
