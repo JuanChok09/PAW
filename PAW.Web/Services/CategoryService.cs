@@ -25,7 +25,9 @@ public class CategoryService : ServiceBase, ICategoryService
     public async Task<IEnumerable<CategoryDTO>> GetCategoriesAsync()
     {
         var response =
-            await _restProvider.GetAsync(SetPathUrl(_path), id: null);
+            await _restProvider.GetAsync(
+                SetPathUrl(_path),
+                id: null);
 
         var categories =
             await JsonProvider.DeserializeAsync<IEnumerable<CategoryDTO>>(response);
@@ -36,12 +38,11 @@ public class CategoryService : ServiceBase, ICategoryService
     public async Task<CategoryDTO> GetCategoryAsync(int id)
     {
         var response =
-            await _restProvider.GetAsync(SetPathUrl(_path + "/" + id), id: null);
+            await _restProvider.GetAsync(
+                SetPathUrl(_path + "/" + id),
+                id: null);
 
-        var category =
-            await JsonProvider.DeserializeAsync<CategoryDTO>(response);
-
-        return category;
+        return await JsonProvider.DeserializeAsync<CategoryDTO>(response);
     }
 
     public async Task SaveCategoryAsync(CategoryDTO categoryDTO)
@@ -54,16 +55,18 @@ public class CategoryService : ServiceBase, ICategoryService
             category
         };
 
-        var content = JsonProvider.Serialize(categories);
+        var content =
+            JsonProvider.Serialize(categories);
 
-        await _restProvider.PostAsync(SetPathUrl(_path), content);
+        await _restProvider.PostAsync(
+            SetPathUrl(_path),
+            content);
     }
 
     public async Task DeleteCategoryAsync(int id)
     {
         await _restProvider.DeleteAsync(
             SetPathUrl(_path + "/" + id),
-            string.Empty
-        );
+            string.Empty);
     }
 }

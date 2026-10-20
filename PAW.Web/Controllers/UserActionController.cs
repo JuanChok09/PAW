@@ -19,12 +19,44 @@ namespace PAW.Web.Controllers
             _logger = logger;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
+            const int pageSize = 25;
+
             var result =
                 await _userActionService.GetUserActionsAsync();
 
-            return View(result);
+            var userActions = result.ToList();
+
+            int totalItems = userActions.Count;
+
+            int totalPages =
+                (int)Math.Ceiling((double)totalItems / pageSize);
+
+            if (totalPages == 0)
+            {
+                totalPages = 1;
+            }
+
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+            if (page > totalPages)
+            {
+                page = totalPages;
+            }
+
+            var pagedUserActions = userActions
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+
+            return View(pagedUserActions);
         }
 
         public async Task<IActionResult> Details(decimal id)
