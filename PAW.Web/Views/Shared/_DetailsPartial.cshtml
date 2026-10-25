@@ -1,0 +1,118 @@
+﻿@model object
+
+@{
+    string title =
+        ViewData["DetailsTitle"]?.ToString() ?? "Details";
+
+    var properties =
+        Model.GetType().GetProperties();
+
+    var relatedObjects =
+        ViewData["RelatedObjects"]
+        as Dictionary<string, object>;
+}
+
+<div class="card mt-3 mb-3 shadow-sm">
+
+    <div class="card-header">
+        <h5 class="mb-0">@title</h5>
+    </div>
+
+    <div class="card-body">
+
+        @foreach (var property in properties)
+        {
+            var value = property.GetValue(Model);
+
+            var propertyName =
+                System.Text.RegularExpressions.Regex.Replace(
+                    property.Name,
+                    "([a-z])([A-Z])",
+                    "$1 $2");
+
+            <div class="row mb-2">
+
+                <div class="col-md-3 fw-bold">
+                    @propertyName:
+                </div>
+
+                <div class="col-md-9">
+
+                    @if (value is DateTime dateValue)
+                    {
+                        @dateValue.ToString("yyyy-MM-dd HH:mm")
+                    }
+                    else
+                    {
+                        @value
+                    }
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+</div>
+
+
+@if (relatedObjects != null &&
+     relatedObjects.Any())
+{
+    foreach (var relatedObject in relatedObjects)
+    {
+        var relatedProperties =
+            relatedObject.Value
+                .GetType()
+                .GetProperties();
+
+        <div class="card mt-3 mb-3 shadow-sm">
+
+            <div class="card-header">
+                <h5 class="mb-0">
+                    @relatedObject.Key
+                </h5>
+            </div>
+
+            <div class="card-body">
+
+                @foreach (var property in relatedProperties)
+                {
+                    var value =
+                        property.GetValue(
+                            relatedObject.Value);
+
+                    var propertyName =
+                        System.Text.RegularExpressions.Regex.Replace(
+                            property.Name,
+                            "([a-z])([A-Z])",
+                            "$1 $2");
+
+                    <div class="row mb-2">
+
+                        <div class="col-md-3 fw-bold">
+                            @propertyName:
+                        </div>
+
+                        <div class="col-md-9">
+
+                            @if (value is DateTime dateValue)
+                            {
+                                @dateValue.ToString("yyyy-MM-dd HH:mm")
+                            }
+                            else
+                            {
+                                @value
+                            }
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+
+        </div>
+    }
+}

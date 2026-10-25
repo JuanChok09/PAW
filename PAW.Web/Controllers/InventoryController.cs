@@ -64,7 +64,11 @@ namespace PAW.Web.Controllers
             var inventory =
                 await _inventoryService.GetInventoryAsync(id);
 
-            return PartialView("_DetailsPartial", inventory);
+            ViewData["DetailsTitle"] = "Inventory Details";
+
+            return PartialView(
+                "~/Views/Shared/_DetailsPartial.cshtml",
+                inventory);
         }
 
         public async Task<IActionResult> Edit(int id)
@@ -72,7 +76,29 @@ namespace PAW.Web.Controllers
             var inventory =
                 await _inventoryService.GetInventoryAsync(id);
 
-            return PartialView("_EditPartial", inventory);
+            ViewData["EditTitle"] = "Edit Inventory";
+            ViewData["FormId"] = "editInventoryForm";
+            ViewData["SaveFunction"] = "saveInventoryEdit";
+
+            ViewData["HiddenProperties"] =
+                new string[]
+                {
+                    "InventoryId",
+                    "DateAdded"
+                };
+
+            ViewData["EditableProperties"] =
+                new string[]
+                {
+                    "UnitPrice",
+                    "UnitsInStock",
+                    "ProductId",
+                    "ModifiedBy"
+                };
+
+            return PartialView(
+                "~/Views/Shared/_EditPartial.cshtml",
+                inventory);
         }
 
         [HttpPost]

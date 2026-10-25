@@ -61,16 +61,41 @@ namespace PAW.Web.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
-            var category = await _categoryService.GetCategoryAsync(id);
+            var category =
+                await _categoryService.GetCategoryAsync(id);
 
-            return PartialView("_DetailsPartial", category);
+            ViewData["DetailsTitle"] = "Category Details";
+
+            return PartialView(
+                "~/Views/Shared/_DetailsPartial.cshtml",
+                category);
         }
 
         public async Task<IActionResult> Edit(int id)
         {
-            var category = await _categoryService.GetCategoryAsync(id);
+            var category =
+                await _categoryService.GetCategoryAsync(id);
 
-            return PartialView("_EditPartial", category);
+            ViewData["EditTitle"] = "Edit Category";
+            ViewData["FormId"] = "editCategoryForm";
+            ViewData["SaveFunction"] = "saveCategoryEdit";
+            ViewData["HiddenProperties"] =
+            new string[]
+            {
+                "CategoryId"
+            };
+
+            ViewData["EditableProperties"] =
+                new string[]
+                {
+            "CategoryName",
+            "Description",
+            "ModifiedBy"
+                };
+
+            return PartialView(
+                "~/Views/Shared/_EditPartial.cshtml",
+                category);
         }
 
         [HttpPost]

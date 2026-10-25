@@ -64,7 +64,11 @@ namespace PAW.Web.Controllers
             var role =
                 await _roleService.GetRoleAsync(id);
 
-            return PartialView("_DetailsPartial", role);
+            ViewData["DetailsTitle"] = "Role Details";
+
+            return PartialView(
+                "~/Views/Shared/_DetailsPartial.cshtml",
+                role);
         }
 
         public async Task<IActionResult> Edit(int id)
@@ -72,7 +76,25 @@ namespace PAW.Web.Controllers
             var role =
                 await _roleService.GetRoleAsync(id);
 
-            return PartialView("_EditPartial", role);
+            ViewData["EditTitle"] = "Edit Role";
+            ViewData["FormId"] = "editRoleForm";
+            ViewData["SaveFunction"] = "saveRoleEdit";
+
+            ViewData["HiddenProperties"] =
+                new string[]
+                {
+                    "RoleId"
+                };
+
+            ViewData["EditableProperties"] =
+                new string[]
+                {
+                    "RoleName"
+                };
+
+            return PartialView(
+                "~/Views/Shared/_EditPartial.cshtml",
+                role);
         }
 
         [HttpPost]

@@ -64,7 +64,11 @@ namespace PAW.Web.Controllers
             var supplier =
                 await _supplierService.GetSupplierAsync(id);
 
-            return PartialView("_DetailsPartial", supplier);
+            ViewData["DetailsTitle"] = "Supplier Details";
+
+            return PartialView(
+                "~/Views/Shared/_DetailsPartial.cshtml",
+                supplier);
         }
 
         public async Task<IActionResult> Edit(int id)
@@ -72,7 +76,32 @@ namespace PAW.Web.Controllers
             var supplier =
                 await _supplierService.GetSupplierAsync(id);
 
-            return PartialView("_EditPartial", supplier);
+            ViewData["EditTitle"] = "Edit Supplier";
+            ViewData["FormId"] = "editSupplierForm";
+            ViewData["SaveFunction"] = "saveSupplierEdit";
+
+            ViewData["HiddenProperties"] =
+                new string[]
+                {
+                    "SupplierId"
+                };
+
+            ViewData["EditableProperties"] =
+                new string[]
+                {
+                    "SupplierName",
+                    "ContactName",
+                    "ContactTitle",
+                    "Phone",
+                    "Address",
+                    "City",
+                    "Country",
+                    "ModifiedBy"
+                };
+
+            return PartialView(
+                "~/Views/Shared/_EditPartial.cshtml",
+                supplier);
         }
 
         [HttpPost]

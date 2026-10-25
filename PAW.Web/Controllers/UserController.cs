@@ -64,7 +64,11 @@ namespace PAW.Web.Controllers
             var user =
                 await _userService.GetUserAsync(id);
 
-            return PartialView("_DetailsPartial", user);
+            ViewData["DetailsTitle"] = "User Details";
+
+            return PartialView(
+                "~/Views/Shared/_DetailsPartial.cshtml",
+                user);
         }
 
         public async Task<IActionResult> Edit(int id)
@@ -72,7 +76,31 @@ namespace PAW.Web.Controllers
             var user =
                 await _userService.GetUserAsync(id);
 
-            return PartialView("_EditPartial", user);
+            ViewData["EditTitle"] = "Edit User";
+            ViewData["FormId"] = "editUserForm";
+            ViewData["SaveFunction"] = "saveUserEdit";
+
+            ViewData["HiddenProperties"] =
+                new string[]
+                {
+                    "UserId",
+                    "CreatedAt"
+                };
+
+            ViewData["EditableProperties"] =
+                new string[]
+                {
+                    "Username",
+                    "Email",
+                    "IsActive",
+                    "RoleId",
+                    "ModifiedBy",
+                    "LastModifiedBy"
+                };
+
+            return PartialView(
+                "~/Views/Shared/_EditPartial.cshtml",
+                user);
         }
 
         [HttpPost]

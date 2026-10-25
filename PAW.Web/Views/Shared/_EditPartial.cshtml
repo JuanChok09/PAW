@@ -1,0 +1,122 @@
+﻿@model object
+
+@{
+    string title =
+        ViewData["EditTitle"]?.ToString() ?? "Edit";
+
+    string formId =
+        ViewData["FormId"]?.ToString() ?? "editForm";
+
+    string saveFunction =
+        ViewData["SaveFunction"]?.ToString() ?? "";
+
+    var editableProperties =
+        ViewData["EditableProperties"] as string[]
+        ?? Array.Empty<string>();
+
+    var hiddenProperties =
+        ViewData["HiddenProperties"] as string[]
+        ?? Array.Empty<string>();
+
+    var properties =
+        Model.GetType().GetProperties();
+}
+
+<form id="@formId">
+
+    @foreach (var hiddenPropertyName in hiddenProperties)
+    {
+        var hiddenProperty =
+            properties.FirstOrDefault(
+                p => p.Name == hiddenPropertyName);
+
+        if (hiddenProperty != null)
+        {
+            <input type="hidden"
+                   name="@hiddenProperty.Name"
+                   value="@hiddenProperty.GetValue(Model)" />
+        }
+    }
+
+    <div class="card mt-3 mb-3 shadow-sm">
+
+        <div class="card-header">
+            <h5 class="mb-0">@title</h5>
+        </div>
+
+        <div class="card-body">
+
+            @foreach (var propertyName in editableProperties)
+            {
+                var property =
+                    properties.FirstOrDefault(
+                        p => p.Name == propertyName);
+
+                if (property != null)
+                {
+                    var value =
+                        property.GetValue(Model);
+
+                    var label =
+                        System.Text.RegularExpressions.Regex.Replace(
+                            property.Name,
+                            "([a-z])([A-Z])",
+                            "$1 $2");
+
+                    var propertyType =
+                        Nullable.GetUnderlyingType(property.PropertyType)
+                        ?? property.PropertyType;
+
+                    if (propertyType == typeof(bool))
+                    {
+                        bool isChecked =
+                            value != null &&
+                            Convert.ToBoolean(value);
+
+                        <div class="form-check mb-3">
+
+                            <input type="checkbox"
+                                   class="form-check-input"
+                                   name="@property.Name"
+                                   value="true"
+                                   checked="@isChecked" />
+
+                            <input type="hidden"
+                                   name="@property.Name"
+                                   value="false" />
+
+                            <label class="form-check-label">
+                                @label
+                            </label>
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                @label
+                            </label>
+
+                            <input type="text"
+                                   class="form-control"
+                                   name="@property.Name"
+                                   value="@value" />
+
+                        </div>
+                    }
+                }
+            }
+
+            <button type="button"
+                    class="btn btn-success"
+                    onclick="@($"{saveFunction}()")">
+                Save
+            </button>
+
+        </div>
+
+    </div>
+
+</form>

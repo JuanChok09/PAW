@@ -64,7 +64,11 @@ namespace PAW.Web.Controllers
             var component =
                 await _componentService.GetComponentAsync(id);
 
-            return PartialView("_DetailsPartial", component);
+            ViewData["DetailsTitle"] = "Component Details";
+
+            return PartialView(
+                "~/Views/Shared/_DetailsPartial.cshtml",
+                component);
         }
 
         public async Task<IActionResult> Edit(decimal id)
@@ -72,7 +76,26 @@ namespace PAW.Web.Controllers
             var component =
                 await _componentService.GetComponentAsync(id);
 
-            return PartialView("_EditPartial", component);
+            ViewData["EditTitle"] = "Edit Component";
+            ViewData["FormId"] = "editComponentForm";
+            ViewData["SaveFunction"] = "saveComponentEdit";
+
+            ViewData["HiddenProperties"] =
+                new string[]
+                {
+                    "Id"
+                };
+
+            ViewData["EditableProperties"] =
+                new string[]
+                {
+                    "Name",
+                    "Content"
+                };
+
+            return PartialView(
+                "~/Views/Shared/_EditPartial.cshtml",
+                component);
         }
 
         [HttpPost]

@@ -64,7 +64,11 @@ namespace PAW.Web.Controllers
             var notification =
                 await _notificationService.GetNotificationAsync(id);
 
-            return PartialView("_DetailsPartial", notification);
+            ViewData["DetailsTitle"] = "Notification Details";
+
+            return PartialView(
+                "~/Views/Shared/_DetailsPartial.cshtml",
+                notification);
         }
 
         public async Task<IActionResult> Edit(int id)
@@ -72,7 +76,28 @@ namespace PAW.Web.Controllers
             var notification =
                 await _notificationService.GetNotificationAsync(id);
 
-            return PartialView("_EditPartial", notification);
+            ViewData["EditTitle"] = "Edit Notification";
+            ViewData["FormId"] = "editNotificationForm";
+            ViewData["SaveFunction"] = "saveNotificationEdit";
+
+            ViewData["HiddenProperties"] =
+                new string[]
+                {
+                    "Id",
+                    "CreatedAt"
+                };
+
+            ViewData["EditableProperties"] =
+                new string[]
+                {
+                    "UserId",
+                    "Message",
+                    "IsRead"
+                };
+
+            return PartialView(
+                "~/Views/Shared/_EditPartial.cshtml",
+                notification);
         }
 
         [HttpPost]

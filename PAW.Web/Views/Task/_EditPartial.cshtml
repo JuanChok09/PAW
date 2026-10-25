@@ -1,48 +1,152 @@
-﻿@model PAW.Models.DTO.TaskDTO
+﻿@model object
 
-<form id="editTaskForm">
+@{
+    string title =
+        ViewData["EditTitle"]?.ToString() ?? "Edit";
 
-    <input type="hidden" asp-for="Id" />
-    <input type="hidden" asp-for="CreatedAt" />
+    string formId =
+        ViewData["FormId"]?.ToString() ?? "editForm";
+
+    string saveFunction =
+        ViewData["SaveFunction"]?.ToString() ?? "";
+
+    var editableProperties =
+        ViewData["EditableProperties"] as string[]
+        ?? Array.Empty<string>();
+
+    var hiddenProperties =
+        ViewData["HiddenProperties"] as string[]
+        ?? Array.Empty<string>();
+
+    var properties =
+        Model.GetType().GetProperties();
+}
+
+<form id="@formId">
+
+    @foreach (var hiddenPropertyName in hiddenProperties)
+    {
+        var hiddenProperty =
+            properties.FirstOrDefault(
+                p => p.Name == hiddenPropertyName);
+
+        if (hiddenProperty != null)
+        {
+            var hiddenValue =
+                hiddenProperty.GetValue(Model);
+
+            if (hiddenValue is DateTime hiddenDate)
+            {
+                <input type="hidden"
+                       name="@hiddenProperty.Name"
+                       value="@hiddenDate.ToString("yyyy-MM-ddTHH:mm:ss")" />
+            }
+            else
+            {
+                <input type="hidden"
+                       name="@hiddenProperty.Name"
+                       value="@hiddenValue" />
+            }
+        }
+    }
 
     <div class="card mt-3 mb-3 shadow-sm">
 
         <div class="card-header">
-            <h5 class="mb-0">Edit Task</h5>
+            <h5 class="mb-0">@title</h5>
         </div>
 
         <div class="card-body">
 
-            <div class="mb-3">
-                <label asp-for="Name" class="form-label"></label>
-                <input asp-for="Name" class="form-control" />
-            </div>
+            @foreach (var propertyName in editableProperties)
+            {
+                var property =
+                    properties.FirstOrDefault(
+                        p => p.Name == propertyName);
 
-            <div class="mb-3">
-                <label asp-for="Description" class="form-label"></label>
-                <input asp-for="Description" class="form-control" />
-            </div>
+                if (property != null)
+                {
+                    var value =
+                        property.GetValue(Model);
 
-            <div class="mb-3">
-                <label asp-for="Status" class="form-label"></label>
-                <input asp-for="Status" class="form-control" />
-            </div>
+                    var label =
+                        System.Text.RegularExpressions.Regex.Replace(
+                            property.Name,
+                            "([a-z])([A-Z])",
+                            "$1 $2");
 
-            <div class="mb-3">
-                <label asp-for="DueDate" class="form-label"></label>
-                <input asp-for="DueDate"
-                       type="datetime-local"
-                       class="form-control" />
-            </div>
+                    var propertyType =
+                        Nullable.GetUnderlyingType(property.PropertyType)
+                        ?? property.PropertyType;
 
-            <div class="mb-3">
-                <label asp-for="ModifiedBy" class="form-label"></label>
-                <input asp-for="ModifiedBy" class="form-control" />
-            </div>
+                    if (propertyType == typeof(bool))
+                    {
+                        bool isChecked =
+                            value != null &&
+                            Convert.ToBoolean(value);
+
+                        <div class="form-check mb-3">
+
+                            <input type="checkbox"
+                                   class="form-check-input"
+                                   name="@property.Name"
+                                   value="true"
+                                   checked="@isChecked" />
+
+                            <input type="hidden"
+                                   name="@property.Name"
+                                   value="false" />
+
+                            <label class="form-check-label">
+                                @label
+                            </label>
+
+                        </div>
+                    }
+                    else if (propertyType == typeof(DateTime))
+                    {
+                        string dateValue = "";
+
+                        if (value is DateTime date)
+                        {
+                            dateValue =
+                                date.ToString("yyyy-MM-ddTHH:mm");
+                        }
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                @label
+                            </label>
+
+                            <input type="datetime-local"
+                                   class="form-control"
+                                   name="@property.Name"
+                                   value="@dateValue" />
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                @label
+                            </label>
+
+                            <input type="text"
+                                   class="form-control"
+                                   name="@property.Name"
+                                   value="@value" />
+
+                        </div>
+                    }
+                }
+            }
 
             <button type="button"
                     class="btn btn-success"
-                    onclick="saveTaskEdit()">
+                    onclick="@($"{saveFunction}()")">
                 Save
             </button>
 
