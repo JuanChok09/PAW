@@ -17,6 +17,7 @@ builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserActionService, UserActionService>();
 builder.Services.AddScoped<IUserRoleService, UserRoleService>();
+builder.Services.AddHttpClient<IExchangeRateService, ExchangeRateService>();
 
 var app = builder.Build();
 
